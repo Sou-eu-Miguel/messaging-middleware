@@ -1,7 +1,7 @@
 package br.imd.messagemanager.listener;
 
 import br.imd.messagemanager.model.MiddlewareMessage;
-import br.imd.messagemanager.publisher.Publisher;
+import br.imd.messagemanager.publisher.PublisherBus;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -16,18 +16,18 @@ public class MosquitoListener implements MqttCallback {
   private static final Logger LOGGER = LogManager.getLogger(MosquitoListener.class);
 
   private final ObjectMapper objectMapper;
-  private final Publisher publisher;
+  private final PublisherBus publisherBus;
 
-  public MosquitoListener(ObjectMapper objectMapper, Publisher publisher) {
+  public MosquitoListener(ObjectMapper objectMapper, PublisherBus publisherBus) {
     this.objectMapper = objectMapper;
-    this.publisher = publisher;
+    this.publisherBus = publisherBus;
   }
 
   @Override
   public void messageArrived(String topic, MqttMessage message) throws Exception {
     final var messageConverted = getMessage(message);
     LOGGER.info("Received message: {}", messageConverted);
-    publisher.send(messageConverted);
+    publisherBus.send(messageConverted);
   }
 
   public void connectionLost(Throwable cause) {
