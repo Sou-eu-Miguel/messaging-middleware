@@ -1,34 +1,25 @@
-import pika
-import time
+import pika, sys, os
 
-credentials = pika.PlainCredentials('guest', 'guest')
-parameters = pika.ConnectionParameters('localhost', credentials=credentials)
-connection = pika.BlockingConnection(parameters)
-channel = connection.channel()
+host = 'localhost'
+queue = 'test-queue'
 
-QUEUE_NAME = 'test_queue'
-channel.queue_declare(queue=QUEUE_NAME)
+def main(host):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=host))
+    channel = connection.channel()
+    channel.queue_declare(queue=queue)
 
-MESSAGE_COUNT = 100000
+    def callback(ch, method, properties, body):
+        print(" [x] Received %r" % body)
+    channel.basic_consume(queue=queue, on_message_callback=callback, auto_ack=True)
+    print(' [*] Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
 
-def send_messages():
-    for i in range(MESSAGE_COUNT):
-        channel.basic_publish(exchange='', routing_key=QUEUE_NAME, body='Throughput test message')
-    print('Messages sent')
-
-def receive_messages():
-    for i in range(MESSAGE_COUNT):
-        channel.basic_get(queue=QUEUE_NAME, auto_ack=True)
-    print('Messages received')
-
-def measure_time(block):
-    start_time = time.time()
-    block()
-    end_time = time.time()
-    return end_time - start_time
-
-receive_time = measure_time(receive_messages)
-throughput = MESSAGE_COUNT / receive_time
-
-print('Receive Time: {:.4f} seconds'.format(receive_time))
-print('Throughput: {:.4f} messages/second'.format(throughput))
+if __name__ == '__main__':
+    try:
+        main(host)
+    except KeyboardInterrupt:
+        print('Interrupted')
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
