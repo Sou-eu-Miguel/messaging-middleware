@@ -1,4 +1,6 @@
 #!pip install kafka
+#!pip install kafka-python
+
 
 from kafka import KafkaProducer, KafkaConsumer
 import json
@@ -46,7 +48,7 @@ gfKafka.criar_topico('DISTRIB')
 payload = {
     "contexto": "DISTRIB",
     "destinatario": "appASDFG",
-    "mensagem": "Enviando mensgem pelo Kafka!"
+    "mensagem": "Enviando mensagem pelo Kafka!"
 }
 
 # Publicando uma mensagem no tópico
