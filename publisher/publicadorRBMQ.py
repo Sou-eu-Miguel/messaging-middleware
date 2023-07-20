@@ -15,13 +15,13 @@ conexao = pika.BlockingConnection(pika.ConnectionParameters(host=host, virtual_h
 #print()
 channel = conexao.channel()
 #channel.queue_declare(queue='geral')
-def pubMensRBMQ(mensagem)
+def pubMensRBMQ(mensagem):
     exchange=mensagem["contexto"]
     routk=mensagem["contexto"]
     channel.basic_publish(exchange=exchange,
                     routing_key=routk,
                     body=mensagem)
 
-def desconectarRBMQ()    
+def desconectarRBMQ():    
     conexao.close()
 

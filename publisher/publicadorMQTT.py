@@ -22,12 +22,13 @@ def desconectarMQTT():
 
 
 # Configurações de conexão
+'''
 host = 'localhost'
 port = 1883
 usuario = 'guest'
 senha = 'guest'
 topico = "geral"
-
+'''
 
 cliente = mqtt.Client()
 #iniciar()

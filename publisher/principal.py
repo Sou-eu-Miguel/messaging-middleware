@@ -1,4 +1,6 @@
 import json
+import ConfigParser
+
 from publicadorKFK import conectaRKFK, desconectarKFK, pubMensKFK
 from publicadorMQTT import conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
 from publicadorRBMQ import desconectarRBMQ, pubMensRBMQ
@@ -52,18 +54,40 @@ print()
 print (f"Essa foi a mensagem preparada: {payload}")
 print()
 
+#faz a leitura dos parâmetros de acesso
+def importar_config(provedor):
+    #seta o arquivo de configuraçao
+    config = ConfigParser()
+    config.read("publisher-config.ini")
+    # faz a leitua dos dados do arquivo de configuracao
+    port = config.get(provedor,port)
+    host = config.get(provedor,host)
+    usuario = config.get(provedor,usuario)
+    senha = config.get(provedor,senha)
+    topico = config.get(provedor,topico)
+
+
 vDestino = escolheDestino()
+
+#Variáveis para uso nas conexões
+host="localhost"
+port=8080
+usuario="guest"
+senha="guest"
+topico="middleware" 
+
+
 
 if vDestino == 3: # MQTT
     import publicadorMQTT
-
-    conectarMQTT(host,port,usuario,senha)
+    importar_config("MQTT")
+    conectarMQTT('localhost',1883,'guest','guest')
     iniciarMQTT()
     pubMensMQTT(payload)
     desconectarMQTT()
 elif vDestino == 2: # KAFKA
     import publicadorKFK
-
+    
     pubMensKFK(topico,payload)
     desconectarKFK()
 elif vDestino == 2: # RABBITMQ

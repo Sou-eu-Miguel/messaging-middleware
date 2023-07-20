@@ -9,7 +9,8 @@ def pubMensKFK(nome_topico, mensagem):
         
 
 # Configurações de conexão
-bootstrap_servers = 'localhost:9092'
+#bootstrap_servers = 'localhost:9092'
+bootstrap_servers = host:port
 
 # Criando uma instância do gerenciador de filas Kafka
 #def conectarKFK ():
@@ -19,7 +20,7 @@ kafka = KafkaProducer(bootstrap_servers=bootstrap_servers, value_serializer=lamb
 
 # Criando um payload
 #mensagem = {'contexto': 'time','mensagem': 'Enviando mensagem pelo Kafka!'}
-topico = "geral"
+#topico = "geral"
 #print(mensagem)
 
 # Publicando uma mensagem no tópico
