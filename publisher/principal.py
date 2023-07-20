@@ -1,5 +1,5 @@
 import json
-import ConfigParser
+import configparser
 
 from publicadorKFK import conectaRKFK, desconectarKFK, pubMensKFK
 from publicadorMQTT import conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
@@ -16,6 +16,9 @@ def repl(c, v):
 def escolheDestino():
     #clear
     vMenu = {
+
+
+        
         0:"Sair do Sistema", 
         1:"Enviar mensagem para RabbitMq", 
         2:"Enviar mensagem para Kafka",
