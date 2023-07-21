@@ -1,9 +1,42 @@
 import json
 import configparser
 
-from publicadorKFK import conectaRKFK, desconectarKFK, pubMensKFK
-from publicadorMQTT import conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
-from publicadorRBMQ import desconectarRBMQ, pubMensRBMQ
+#from publicadorKFK import conectaRKFK, desconectarKFK, pubMensKFK
+#from publicadorMQTT import conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
+#from publicadorRBMQ import desconectarRBMQ, pubMensRBMQ
+#import publicadorKFK
+#import publicadorMQTT
+#import publicadorRBMQ
+
+# VARIAVEIS GLOBAIS
+host = ""
+port = 0
+usuario = ""
+senha = ""
+topico = ""
+vhost = ""
+vexchange = ""
+vOpcaoMenu = {
+                0:"SAIR",
+                1:"RABBITMQ",
+                2:"KAFKA",
+                3:"MQTT",
+            }
+
+# FUNÇÕES AUXILIARES PARA CONTROLE DAS
+#faz a leitura dos parâmetros de acesso
+def importaConfig(provedor):
+    config = configparser()
+    config.read("publisher-config.ini")
+    # 
+    port = config.get(provedor,port)
+    host = config.get(provedor,host)
+    usuario = config.get(provedor,usuario)
+    senha = config.get(provedor,senha)
+    topico = config.get(provedor,topico)
+    vhost = config.get(provedor,vhost)
+    vexchange = config.get(provedor,vexchange)
+
 
 # replica o caracter a quantdade de vezes desejada
 def repl(c, v):
@@ -11,6 +44,7 @@ def repl(c, v):
     for x in range(v):
         ret += c
     return (ret)
+
 
 # monta o menu e retorna a opção escolhida para envio da mensagem
 def escolheDestino():
@@ -37,16 +71,15 @@ def escolheDestino():
     
 
 def montaPayload (pContext, pMsg):
-    return ({
-        "contexto": pContext, 
-        "mensagem": pMsg
-            })    
+    return (json.dumps({"context":pContext,"body":pMsg}).encode("utf-8"))
 
+
+# #   I N I C I A  O  P R O G R A M A   # #
 # Obtem o contexto e mensagem para montagem do payload
 print()
 vContext = input("Informe o contexto da mensagem: ")
 print()
-vMsg = input("Informe a mensagem a ser enviada: ")
+vMsg = input("Digite a mensagem a ser enviada: ")
 
 # monta e apresneta a mensagem escolhida
 payload = montaPayload(vContext,vMsg)
@@ -54,32 +87,20 @@ print()
 print (f"Essa foi a mensagem preparada: {payload}")
 print()
 
-#faz a leitura dos parâmetros de acesso
-def importar_config(provedor):
-    #seta o arquivo de configuraçao
-    config = ConfigParser()
-    config.read("publisher-config.ini")
-    # faz a leitua dos dados do arquivo de configuracao
-    port = config.get(provedor,port)
-    host = config.get(provedor,host)
-    usuario = config.get(provedor,usuario)
-    senha = config.get(provedor,senha)
-    topico = config.get(provedor,topico)
-
-
+# mostra o menu para escolha do destinatário
 vDestino = escolheDestino()
 
-#Variáveis para uso nas conexões
-host="localhost"
-port=8080
-usuario="guest"
-senha="guest"
-topico="middleware" 
+print()
+print(vOpcaoMenu[vDestino])
+print
 
+importaConfig(vOpcaoMenu[vDestino])
 
+print(host,port,)
 
+'''
 if vDestino == 3: # MQTT
-    import publicadorMQTT
+    "import publicadorMQTT
     importar_config("MQTT")
     conectarMQTT('localhost',1883,'guest','guest')
     iniciarMQTT()
@@ -95,3 +116,4 @@ elif vDestino == 2: # RABBITMQ
 
     pubMensRBMQ(payload)
     desconectarRBMQ
+'''
