@@ -16,9 +16,6 @@ def repl(c, v):
 def escolheDestino():
     #clear
     vMenu = {
-
-
-        
         0:"Sair do Sistema", 
         1:"Enviar mensagem para RabbitMq", 
         2:"Enviar mensagem para Kafka",
