@@ -1,10 +1,23 @@
 import json
 import configparser
 
-from publicadorKFK import conectaRKFK, desconectarKFK, pubMensKFK
-from publicadorMQTT import conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
-from publicadorRBMQ import desconectarRBMQ, pubMensRBMQ
+#import das funções criadas para os tratamentos das mensagens
+from publicadorKFK import * #conectaRKFK, desconectarKFK, pubMensKFK
+from publicadorMQTT import * #conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
+from publicadorRBMQ import * #desconectarRBMQ, pubMensRBMQ
 
+
+# VARIÁVEIS GLOBAIS
+host = ""
+port = 0
+usuario = ""
+senha = ""
+topico = ""
+vhost =  ""
+vexchange = ""
+
+
+# FUNÇÕES DE CONFIGURAÇÃO E AUXILIARES
 # replica o caracter a quantdade de vezes desejada
 def repl(c, v):
     ret = ""
@@ -35,63 +48,55 @@ def escolheDestino():
     except:
         return(0)
     
-
+# prepara a mensagem já no formato JSON
 def montaPayload (pContext, pMsg):
-    return ({
-        "contexto": pContext, 
-        "mensagem": pMsg
-            })    
+    return (json.dumps({"context":pContext,"body":pMsg}).encode("utf-8"))
+
+# faz a leitura do arquivo de parâmetros de acesso para cada servidor
+def importar_config(provedor):
+    config = configparser()
+    config.read("publisher-config.ini")
+    #
+    host = config.get(provedor,host)
+    port = config.get(provedor,port)
+    usuario = config.get(provedor,usuario)
+    senha = config.get(provedor,senha)
+    topico = config.get(provedor,topico)
+    vhost =  config.get(provedor,vhost)
+    vexchange = config.get(provedor,vexchange)
+
+# INÍCIO DO PROGRAMA PROPRIMENTE DITO
 
 # Obtem o contexto e mensagem para montagem do payload
 print()
 vContext = input("Informe o contexto da mensagem: ")
 print()
-vMsg = input("Informe a mensagem a ser enviada: ")
+vMsg = input("Digite a mensagem a ser enviada: ")
 
-# monta e apresneta a mensagem escolhida
+# monta e apresenta a mensagem escolhida
 payload = montaPayload(vContext,vMsg)
 print()
 print (f"Essa foi a mensagem preparada: {payload}")
 print()
 
-#faz a leitura dos parâmetros de acesso
-def importar_config(provedor):
-    #seta o arquivo de configuraçao
-    config = ConfigParser()
-    config.read("publisher-config.ini")
-    # faz a leitua dos dados do arquivo de configuracao
-    port = config.get(provedor,port)
-    host = config.get(provedor,host)
-    usuario = config.get(provedor,usuario)
-    senha = config.get(provedor,senha)
-    topico = config.get(provedor,topico)
-
-
+# Selecionar entre as opções para envio da mensagem
 vDestino = escolheDestino()
 
-#Variáveis para uso nas conexões
-host="localhost"
-port=8080
-usuario="guest"
-senha="guest"
-topico="middleware" 
+print(vDestino)
 
-
-
-if vDestino == 3: # MQTT
-    import publicadorMQTT
+'''if vDestino == 3: # MQTT
+    
     importar_config("MQTT")
     conectarMQTT('localhost',1883,'guest','guest')
     iniciarMQTT()
     pubMensMQTT(payload)
     desconectarMQTT()
 elif vDestino == 2: # KAFKA
-    import publicadorKFK
+    
     
     pubMensKFK(topico,payload)
     desconectarKFK()
 elif vDestino == 2: # RABBITMQ
-    import publicadorRBMQ
-
     pubMensRBMQ(payload)
     desconectarRBMQ
+'''
