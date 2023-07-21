@@ -22,19 +22,19 @@ def desconectarMQTT():
 
 
 # Configurações de conexão
-'''
+
 host = 'localhost'
 port = 1883
 usuario = 'guest'
 senha = 'guest'
-topico = "geral"
-'''
+topico = "generic"
+
 
 cliente = mqtt.Client()
-#iniciar()
+iniciarMQTT()
 
-#mensagem = "{'contexto':'vasco','mensagem':'tesnte de envio de mensgem pelo MQTT'}"
+mensagem = "{'context':'vasco','body':'tesnte de envio de mensgem pelo MQTT'}"
 
-#publicar_mensagem(mensagem)
-#desconectar ()
+pubMensMQTT(mensagem)
+desconectarMQTT ()
 

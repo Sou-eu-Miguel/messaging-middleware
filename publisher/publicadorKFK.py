@@ -1,34 +1,42 @@
-from kafka import KafkaProducer, KafkaConsumer
+from kafka import KafkaProducer
 import json
 
+kfk=KafkaProducer()
 
-def pubMensKFK(nome_topico, mensagem):
+def pubMensKFK(topico, mensagem):
     msg=json.dumps(mensagem).encode("utf-8")
     #print(json.loads(msg.decode('utf-8')))
-    kafka.send (topic=nome_topico, value=json.loads(msg.decode('utf-8')))
+    #kfk.send (topico, json.loads(msg.decode('utf-8')))
+    kfk.send (topico, msg)
         
 
 # Configurações de conexão
-#bootstrap_servers = 'localhost:9092'
-bootstrap_servers = host:port
+#servidorKFK = 'localhost:9092'
+host='localhost'
+port=9092
+#bootstrap_servers = host:port
 
 # Criando uma instância do gerenciador de filas Kafka
-#def conectarKFK ():
-kafka = KafkaProducer(bootstrap_servers=bootstrap_servers, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+def conectarKFK (pServer):
+    #kfk = KafkaProducer(bootstrap_servers=bootstrap_servers, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    kfk = KafkaProducer(bootstrap_servers=pServer)
+
 
 #print(f"Conectado: {kafka.bootstrap_connected}")
 
-# Criando um payload
-#mensagem = {'contexto': 'time','mensagem': 'Enviando mensagem pelo Kafka!'}
-#topico = "geral"
-#print(mensagem)
-
-# Publicando uma mensagem no tópico
-#kafka.send (topic=topico, value=mensagem)
-#publicar_mensagemKFK(topico,mensagem)
-
 # Fechando a conexão
 def desconectarKFK():
-    kafka.close()
+    kfk.close()
        
+# iniciando o kafka
+conectarKFK(f"{host}:{port}")
+
+# Criando um payload
+mensagem = {'context': "vasco",'body': "Enviando mensagem pelo Kafka!"}
+topico = "generic"
+#print(mensagem)
+
+pubMensKFK(topico, mensagem)
+
+desconectarKFK()
 
