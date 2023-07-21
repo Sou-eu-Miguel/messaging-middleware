@@ -2,10 +2,9 @@ import json
 import configparser
 
 #import das funções criadas para os tratamentos das mensagens
-from publicadorKFK import * #conectaRKFK, desconectarKFK, pubMensKFK
-from publicadorMQTT import * #conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
-from publicadorRBMQ import * #desconectarRBMQ, pubMensRBMQ
-
+#from publicadorKFK import * #conectaRKFK, desconectarKFK, pubMensKFK
+#from publicadorMQTT import * #conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
+#from publicadorRBMQ import * #desconectarRBMQ, pubMensRBMQ
 
 # VARIÁVEIS GLOBAIS
 host = ""
@@ -15,7 +14,10 @@ senha = ""
 topico = ""
 vhost =  ""
 vexchange = ""
-
+vOpcaoMenu = {0:"SAIR",
+              1:"RABBITMQ",
+              2:"KAFKA",
+              3:"MQTT"}
 
 # FUNÇÕES DE CONFIGURAÇÃO E AUXILIARES
 # replica o caracter a quantdade de vezes desejada
@@ -82,7 +84,7 @@ print()
 # Selecionar entre as opções para envio da mensagem
 vDestino = escolheDestino()
 
-print(vDestino)
+print(vOpcaoMenu[vDestino])
 
 '''if vDestino == 3: # MQTT
     
