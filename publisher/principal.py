@@ -5,6 +5,9 @@ import configparser
 #from publicadorKFK import * #conectaRKFK, desconectarKFK, pubMensKFK
 #from publicadorMQTT import * #conectarMQTT, desconectarMQTT, iniciarMQTT, pubMensMQTT
 #from publicadorRBMQ import * #desconectarRBMQ, pubMensRBMQ
+#import publicadorKFK
+import publicadorMQTT
+#import publicadorRBMQ
 
 # VARIÁVEIS GLOBAIS
 host = ""
@@ -55,17 +58,18 @@ def montaPayload (pContext, pMsg):
     return (json.dumps({"context":pContext,"body":pMsg}).encode("utf-8"))
 
 # faz a leitura do arquivo de parâmetros de acesso para cada servidor
-def importar_config(provedor):
-    config = configparser()
+def importar_config(secao):
+    config = configparser.ConfigParser(delimiters="=")
     config.read("publisher-config.ini")
     #
-    host = config.get(provedor,host)
-    port = config.get(provedor,port)
-    usuario = config.get(provedor,usuario)
-    senha = config.get(provedor,senha)
-    topico = config.get(provedor,topico)
-    vhost =  config.get(provedor,vhost)
-    vexchange = config.get(provedor,vexchange)
+    host = config.get(secao,"host")
+    port = config.get(secao,"port")
+    usuario = config.get(secao,"usuario")
+    senha = config.get(secao,"senha")
+    topico = config.get(secao,"topico")
+    if secao == "RABBITMQ":
+        vhost =  config.get(secao,"vhost")
+        vexchange = config.get(secao,"vexchange")
 
 # INÍCIO DO PROGRAMA PROPRIMENTE DITO
 
@@ -84,21 +88,49 @@ print()
 # Selecionar entre as opções para envio da mensagem
 vDestino = escolheDestino()
 
-print(vOpcaoMenu[vDestino])
+#importar as configurações de acesso
+config = configparser.ConfigParser(delimiters="=")
+config.read("publisher-config.ini")
+host = config.get(vOpcaoMenu[vDestino],"host")
+port = config.get(vOpcaoMenu[vDestino],"port")
+usuario = config.get(vOpcaoMenu[vDestino],"usuario")
+senha = config.get(vOpcaoMenu[vDestino],"senha")
+topico = config.get(vOpcaoMenu[vDestino],"topico")
+if vOpcaoMenu[vDestino] == "RABBITMQ":
+    vhost =  config.get(vOpcaoMenu[vDestino],"vhost")
+    vexchange = config.get(vOpcaoMenu[vDestino],"vexchange")
+#importar_config(vOpcaoMenu[vDestino])
 
-'''if vDestino == 3: # MQTT
-    
-    importar_config("MQTT")
-    conectarMQTT('localhost',1883,'guest','guest')
-    iniciarMQTT()
-    pubMensMQTT(payload)
-    desconectarMQTT()
+print(vOpcaoMenu[vDestino])
+print(host,port,usuario,senha,topico)
+
+if vDestino == 3: # MQTT  
+    try:
+        publicadorMQTT.conectarMQTT(host,int(port),usuario,senha,topico)
+        publicadorMQTT.iniciarMQTT()
+        publicadorMQTT.pubMensMQTT(payload)
+        publicadorMQTT.desconectarMQTT()
+        print (f"Mensagem enviadao com sucesso para a fila do {vOpcaoMenu[vDestino]}")
+    except SystemError as err:
+        print(f"Ocorreu o erro {err} e a mensagem não foi enviada!")
 elif vDestino == 2: # KAFKA
-    
-    
-    pubMensKFK(topico,payload)
-    desconectarKFK()
-elif vDestino == 2: # RABBITMQ
-    pubMensRBMQ(payload)
-    desconectarRBMQ
-'''
+    pass
+    '''try:
+        publicadorKFK.conectarKFK(f"{host}:{port}")
+        publicadorKFK.pubMensKFK(payload)
+        publicadorKFK.desconectarKFK()
+        print (f"Mensagem enviadao com sucesso para a fila do {vOpcaoMenu[vDestino]}")
+    except SystemError as err:
+        print(f"Ocorreu o erro {err} e a mensagem não foi enviada!")'''
+elif vDestino == 1: # RABBITMQ
+    pass
+    '''try:
+        publicadorRBMQ.conectarMQTT(host,port,usuario,senha,topico)
+        publicadorMQTT.iniciarMQTT()
+        publicadorMQTT.pubMensMQTT(payload)
+        publicadorMQTT.desconectarMQTT()
+        print (f"Mensagem enviadao com sucesso para a fila do {vOpcaoMenu[vDestino]}")
+    except SystemError as err:
+        print(f"Ocorreu o erro {err} e a mensagem não foi enviada!")'''
+else:
+    print("Finalizado!!!")
