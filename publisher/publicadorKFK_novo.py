@@ -5,8 +5,8 @@ import configparser
 kfk=KafkaProducer()
 
 def pubMensKFK(topico, mensagem):
-    msg=json.dumps(mensagem).encode("utf-8")
-    kfk.send (topico, msg)
+    #msg=json.dumps(mensagem).encode("utf-8")
+    kfk.send (topico, mensagem)
         
 
 # Configurações de conexão
@@ -23,18 +23,20 @@ topico = config.get("KAFKA","topico")
 # Criando uma instância do gerenciador de filas Kafka
 def conectarKFK (pServer):
     kfk = KafkaProducer(bootstrap_servers=pServer)
+
 # Fechando a conexão
 def desconectarKFK():
     kfk.close()
+
+def montaPayload (pContext, pMsg):
+    return (json.dumps({"context":pContext,"body":pMsg}).encode("utf-8"))
+    #return ({"context":pContext,"body":pMsg})
        
 #print(host,port,usuario,senha,topico)
 # iniciando o kafka
-vServer = host+':'+ str(port) 
-print(vServer)
-print (host+':'+ str(port))
-
-
-conectarKFK(f"{host}:{port}")
+#vServer = host+':'+ str(port) 
+#print(vServer)
+#print (host+':'+ str(port))
 
 
 # Criando um payload
@@ -42,9 +44,20 @@ conectarKFK(f"{host}:{port}")
 #topico = "generic"
 #print(mensagem)
 
-#pubMensKFK(topico, mensagem)
-pubMensKFK(topico, {'context': "vasco",'body': "Enviando mensagem pelo Kafka!"})
-print("Mensagem enviada!!")
+print()
+vContext = input("Informe o contexto da mensagem: ")
+print()
+vMsg = input("Digite a mensagem a ser enviada: ")
 
+# monta e apresenta a mensagem escolhida
+payload = montaPayload(vContext,vMsg)
+print()
+print (f"Essa foi a mensagem preparada: {payload}")
+print()
+
+#pubMensKFK(topico, mensagem)
+conectarKFK(f"{host}:{port}")
+pubMensKFK(topico, payload)
+print("Mensagem enviada!!")
 desconectarKFK()
 

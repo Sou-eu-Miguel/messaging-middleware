@@ -36,5 +36,6 @@ iniciarMQTT()
 mensagem = "{'context':'vasco','body':'tesnte de envio de mensgem pelo MQTT'}"
 
 pubMensMQTT(mensagem)
+print("Mensagem enviada!!")
 desconectarMQTT ()
 
