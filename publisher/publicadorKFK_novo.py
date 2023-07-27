@@ -58,6 +58,6 @@ print()
 #pubMensKFK(topico, mensagem)
 conectarKFK(f"{host}:{port}")
 pubMensKFK(topico, payload)
-print("Mensagem enviada!!")
+print("Mensagem enviada para a fila do Kafka!!")
 desconectarKFK()
 

@@ -76,6 +76,6 @@ print()
 
 #pubMensMQTT("{'context':'vasco','body':'tesnte de envio de mensgem pelo MQTT'}",topico)
 pubMensMQTT(payload,topico)
-print("Mensagem enviada!!")
+print("Mensagem enviada para a fila do MQTT!!")
 desconectarMQTT ()
 

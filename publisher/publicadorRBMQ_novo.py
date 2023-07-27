@@ -62,10 +62,10 @@ conexao = pika.BlockingConnection(pika.ConnectionParameters(host=host,virtual_ho
 channel = conexao.channel()
 #channel = cnx.channel()
 
-vmensagem = json.dumps({
-        "context": "vasco", 
-        "body": "Ta indo para segunda..."
-            }).encode("utf-8")
+#vmensagem = json.dumps({
+#        "context": "vasco", 
+#        "body": "Ta indo para segunda..."
+#            }).encode("utf-8")
 
 
 print()
@@ -81,5 +81,5 @@ print()
 
 
 pubMensRBMQ(mensagem=payload,pExchange=vexchange)
-print("Mensagem enviada!!")
+print("Mensagem enviada para a fila do RabbitMQ!!")
 desconectarRBMQ()
