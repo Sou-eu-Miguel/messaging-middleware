@@ -45,8 +45,12 @@ O acesso deverá ser realizado a partir de uma máquina virtual, que contenha o 
   ```
   # mudar o diretório para o correspondente
   message-midleware/queue-manager$ cd ../publisher
-  # Enviar mensagens para qualquer dos serviços
-  message-midleware/publisher$ python principal.py
+  # Enviar mensagens para a fila do RabbitMQ
+  message-midleware/publisher$ python publicadorRBMQ_novo.py
+  # Enviar mensagens para a fila do Kafka
+  message-midleware/publisher$ python publicadorKFK_novo.py
+  # Enviar mensagens para a fila do RabbitMQ
+  message-midleware/publisher$ python publicadorMQTT_novo.py
   ```
   
   Deverá ser informado o contexto e o teor da mensagem, em seguida deverá ser encolhido serviço de mensageria a ser utilizado para envio da mensagem.
