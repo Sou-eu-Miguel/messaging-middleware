@@ -2,7 +2,8 @@ from kafka import KafkaConsumer
 
 bootstrap_servers = ['localhost:9092']
 consumer_group_id = 'sample'
-topic = 'test-topic'
+#topic = 'test-topic'
+topic = 'vasco'
 
 consumer = KafkaConsumer(topic, group_id=consumer_group_id, bootstrap_servers=bootstrap_servers)
 

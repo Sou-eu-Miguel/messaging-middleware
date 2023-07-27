@@ -3,7 +3,8 @@ import json
 
 host=  "localhost"
 port = 1883
-topic = "test-topic"
+#topic = "test-topic"
+topic = "vasco"
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
